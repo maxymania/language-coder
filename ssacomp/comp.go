@@ -17,15 +17,14 @@ import "strconv"
 import "os"
 import "bytes"
 
-/*
-type Statement struct {
-	Dest []string
-	Args []string
-	Expr string
-	Jump string
-	Mark string
+
+type depset map[string][]string
+
+func (d depset)appnd(s string,arg []string){
+	v,_ := d[s]
+	d[s] = append(v,arg...)
 }
-*/
+
 type cset map[string]bool
 func (c cset) set(s string){
 	c[s]=true
@@ -80,6 +79,7 @@ func Compile(sts []Statement,d io.Writer){
 	ct := make(ctable)
 	ct2 := make(ctable)
 	cs := make(cset)
+	ds := make(depset)
 	inln := make(map[string]string)
 	rf := rfile{rmp:make(map[string]string)}
 	sub := func(s string)string {
@@ -95,6 +95,15 @@ func Compile(sts []Statement,d io.Writer){
 		if ok { return r }
 		return "nil"
 	}
+	var decr func(arg string)
+	decr = func(arg string){
+		if ct.decr(arg)==0 {
+			rf.remove(arg)
+			v,_ := ds[arg]
+			for _,vv := range v { decr(vv) }
+			ds[arg] = nil
+		}
+	}
 	
 	for _,s := range sts {
 		for _,arg := range s.Args { ct.incr(arg); ct2.incr(arg) }
@@ -105,10 +114,10 @@ func Compile(sts []Statement,d io.Writer){
 	for _,s := range sts {
 		S = s
 		val := os.Expand(s.Expr,sub)
-		for _,arg := range s.Args {
-			if ct.decr(arg)==0 {
-				rf.remove(arg)
-			}
+		if len(s.Dest)==1 && ct2.get(s.Dest[0])==1 {
+			ds.appnd(s.Dest[0],s.Args)
+		}else{
+			for _,arg := range s.Args { decr(arg) }
 		}
 		if s.Jump!="" {
 			if val!="" { fmt.Fprintf(B,"if (%s) then goto m_%s_m end\n",val,s.Jump) }
