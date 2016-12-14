@@ -1,0 +1,6 @@
+
+statement = Ident ";" #-;
+
+main = (statement * #e EOF #- #E ) #p;
+
+

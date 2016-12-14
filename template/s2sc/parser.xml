@@ -1,0 +1,6 @@
+<Parser>
+	<BasePath>/home/simon/devel/go/language</BasePath>
+	<Syntaxfile>code.syntax</Syntaxfile>
+	<Start>main</Start>
+</Parser>
+
