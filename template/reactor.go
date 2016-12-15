@@ -14,6 +14,7 @@ package template
 import "github.com/yuin/gopher-lua"
 import "github.com/maxymania/langtransf/ast"
 import "fmt"
+import lib_json "github.com/layeh/gopher-json"
 
 const luaAST = "ast"
 
@@ -85,9 +86,12 @@ func i_process(a *ast.AST,fu func(L *lua.LState) error) (string,error){
 	L := lua.NewState()
 	defer L.Close()
 	lua.OpenBase(L)
+	lua.OpenPackage(L)
 	registerAST(L)
 	registerBuffer(L)
 	registerTemplate(L)
+	registerStrconv(L)
+	lib_json.Preload(L)
 	L.SetGlobal("P",L.NewTable())
 	L.SetGlobal("U",L.NewTable())
 	t := L.NewTable()

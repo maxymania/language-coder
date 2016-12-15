@@ -1,0 +1,5 @@
+<Compiler>
+	<BasePath>/home/simon/devel/go/language</BasePath>
+	<Script>process.lua</Script>
+</Compiler>
+

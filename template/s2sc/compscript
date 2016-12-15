@@ -1,0 +1,6 @@
+# SHEBANG!
+{
+	"BasePath":"/home/simon/devel/go/language",
+	"Parser":"parser.xml",
+	"Compiler":"compiler.xml"
+}
