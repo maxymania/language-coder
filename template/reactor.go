@@ -91,6 +91,7 @@ func i_process(a *ast.AST,fu func(L *lua.LState) error) (string,error){
 	registerBuffer(L)
 	registerTemplate(L)
 	registerStrconv(L)
+	registerAlloc(L)
 	lib_json.Preload(L)
 	L.SetGlobal("P",L.NewTable())
 	L.SetGlobal("U",L.NewTable())
